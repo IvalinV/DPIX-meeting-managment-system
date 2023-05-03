@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Citizen\Auth;
+namespace App\Http\Controllers\Lawyer\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
@@ -19,7 +19,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Citizen/Auth/Login', [
+        return Inertia::render('Lawyer/Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
         ]);
@@ -38,16 +38,15 @@ class AuthenticatedSessionController extends Controller
             'password' => 'required',
         ]);
 
-        if(auth()->guard('citizen')->attempt([
+        if(auth()->guard('lawyer')->attempt([
             'email' => $request->email,
             'password' => $request->password,
         ])) {
             $user = auth()->user();
-            // dd($request->all());
 
             return redirect()->intended(RouteServiceProvider::HOME);
         } else {
-            return redirect()->back()->withErrors('Credentials doesn\'t match.');
+            return redirect()->back()->withError('Credentials doesn\'t match.');
         }
 
     }

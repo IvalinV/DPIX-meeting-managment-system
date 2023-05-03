@@ -40,4 +40,9 @@ class Lawyer extends Authenticatable
             'last_name' => '',
         ];
     }
+
+    public function meetings()
+    {
+        return $this->hasMany(Meeting::class);
+    }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Citizen\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Citizen\Auth\NewPasswordController;
 use App\Http\Controllers\Citizen\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Citizen\Auth\RegisteredUserController;
+use App\Http\Controllers\MeetingController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('citizen')->middleware('guest')->group(function () {

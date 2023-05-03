@@ -11,7 +11,7 @@ class StoreMeetingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class StoreMeetingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'lawyer' => 'required',
+            'date' => 'required' //TODO: Create custom rule to check if the date is in the future
         ];
     }
 }

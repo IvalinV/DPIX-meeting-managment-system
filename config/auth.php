@@ -40,9 +40,15 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
         'citizen' => [
             'driver' => 'session',
             'provider' => 'citizens',
+        ],
+
+        'lawyer' => [
+            'driver' => 'session',
+            'provider' => 'lawyers',
         ],
     ],
 
@@ -77,6 +83,11 @@ return [
         'citizens' => [
             'driver' => 'eloquent',
             'model' => App\Models\Citizen::class,
+        ],
+
+        'lawyers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Lawyer::class,
         ],
     ],
 

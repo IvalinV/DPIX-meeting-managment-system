@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Citizen\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCitizenRequest;
 use App\Http\Requests\UpdateCitizenRequest;
 use App\Models\Citizen;
+use Inertia\Inertia;
 
 class CitizenController extends Controller
 {
@@ -21,7 +23,6 @@ class CitizenController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
