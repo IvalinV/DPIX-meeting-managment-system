@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLawyerRequest;
 use App\Http\Requests\UpdateLawyerRequest;
 use App\Models\Lawyer;
@@ -15,8 +16,11 @@ class LawyerController extends Controller
     public function show(Lawyer $lawyer)
     {
         return Inertia::render('Meeting/Index', [
-            'meetings' => $lawyer->meetings()->with('citizen')->latest()->get()
+            'meetings' => $lawyer
+                ->meetings()
+                ->with('citizen')
+                ->latest()
+                ->paginate(10)
         ]);
     }
-
 }

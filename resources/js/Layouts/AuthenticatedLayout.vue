@@ -5,9 +5,10 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
+const guard = usePage().props.auth.guard;
 </script>
 
 <template>
@@ -65,8 +66,10 @@ const showingNavigationDropdown = ref(false);
 
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
+                                        <DropdownLink 
+                                            :href="guard === 'citizen' ? route('citizen.logout') : route('lawyer.logout')" 
+                                            method="post" as="button">
+                                                Log Out
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>

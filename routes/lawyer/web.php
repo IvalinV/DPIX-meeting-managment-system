@@ -29,6 +29,7 @@ Route::prefix('lawyer')->middleware('guest')->group(function () {
         ->name('lawyer.password.store');
 });
 
-Route::middleware('auth:lawyer')->group(function(){
-    Route::get('/lawyer/{lawyer}/meetings', [LawyerController::class, 'show']);
+Route::middleware('auth:lawyer')->group(function () {
+    Route::get('/lawyer/{lawyer}/meetings', [LawyerController::class, 'show'])->name('lawyer.meetings');
+    Route::post('/lawyer/logout', [AuthenticatedSessionController::class, 'destroy'])->name('lawyer.logout');
 });

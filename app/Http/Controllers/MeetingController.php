@@ -7,17 +7,12 @@ use App\Models\Lawyer;
 use App\Models\Citizen;
 use App\Models\Meeting;
 use App\Http\Requests\StoreMeetingRequest;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MeetingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-
-    }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -26,6 +21,25 @@ class MeetingController extends Controller
         return Inertia::render('Meeting/Create', [
             'lawyers' => \App\Models\Lawyer::all()
         ]);
+    }
+
+        /**
+     * Update the user's profile information.
+     */
+    public function update(Request $request)
+    {
+        $meeting = Meeting::find($request->meeting_id);
+
+        if ($request->status != 'reschedule') {
+            $meeting->update(['status' => $request->status]);
+        }else{
+            // TODO: Think of a better way of doing this.
+            $new_date = $this->rescheduleMeeting(Auth::guard('lawyer')->user());
+            $meeting->update(['date' => $new_date]);
+        }
+
+        return redirect(route('lawyer.meetings', Auth::guard('lawyer')->id()))
+            ->with(['success' => Auth::guard('lawyer')->user()->meetings]);
     }
 
     /**
@@ -40,7 +54,7 @@ class MeetingController extends Controller
         $already_requested = Meeting::whereDate('date', $requested_date)->exists();
 
         if ($already_requested) {
-            $available_slot = $this->rescheduleMeeting($lawyer);
+            $available_slot = $this->rescheduleMeeting($lawyer)->format('M d Y H:i');
             return redirect()->back()->withErrors([
                 'date' => "Date time slot already requested! Can reschedule for: $available_slot"
             ]);
@@ -58,7 +72,7 @@ class MeetingController extends Controller
      * Reschedule meeting.
      *
      * @param \App\Models\Lawyer $lawyer
-     * @return string $available_slot
+     * @return Carbon\Carbon $available_slot
      */
     public function rescheduleMeeting($lawyer)
     {
@@ -67,7 +81,6 @@ class MeetingController extends Controller
                 ->latest()
                 ->first()
                 ->date
-                ->addHour()
-                ->format('M d Y H:i');
+                ->addHour();
     }
 }

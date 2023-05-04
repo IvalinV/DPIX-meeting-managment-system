@@ -5,6 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import DropDown from '@/Components/Dropdown.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
+import VueMultiselect from 'vue-multiselect';
 
 defineProps({
     lawyers: {
@@ -33,18 +34,16 @@ const form = useForm({
 
         <form @submit.prevent="form.post(route('meeting.store'))" class="mt-6 space-y-6">
             <div>
-                <InputLabel for="lawyer" value="Select Lawyer" />
-
-                <select class="mt-1 block w-full" v-model="form.lawyer" name="lawyer" id="lawyer">
-                    <option selected disabled :value="null">Select Lawyer</option>
-                    <option 
-                        v-for="(lawyer, index) in lawyers" 
-                        :key="index" 
-                        :value="lawyer.id"
-                    >
-                    {{ `${lawyer.first_name} ${lawyer.last_name}`}}
-                    </option>
-                </select>
+                <VueMultiselect
+                    v-model="form.lawyer"
+                    :options="lawyers"
+                    :close-on-select="true"
+                    :clear-on-select="false"
+                    placeholder="Select lawyer"
+                    label="first_name"
+                    track-by="id"
+                >
+                </VueMultiselect>
 
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
@@ -75,3 +74,6 @@ const form = useForm({
         </form>
     </section>
 </template>
+<style css>
+    @import url("https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css");
+</style>

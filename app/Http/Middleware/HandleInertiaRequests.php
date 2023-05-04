@@ -31,12 +31,21 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = null;
+        if(Auth::guard('citizen')->check()){
+            $user = Auth::guard('citizen')->user()->toArray();
+        }
+
+        if(Auth::guard('lawyer')->check()){
+            $user = Auth::guard('lawyer')->user()->toArray();
+        }
         return array_merge(parent::share($request), [
             'auth' => [
-                'user' => Auth::guard('citizen')->check() ? Auth::guard('citizen')->user()->toArray() : $request->user(),
+                'user' => $user,
+                'guard' => Auth::guard('lawyer')->check() ? 'lawyer' : 'citizen'
             ],
             'ziggy' => function () use ($request) {
-                return array_merge((new Ziggy)->toArray(), [
+                return array_merge((new Ziggy())->toArray(), [
                     'location' => $request->url(),
                 ]);
             },
