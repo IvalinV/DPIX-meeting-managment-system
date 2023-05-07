@@ -32,4 +32,5 @@ Route::prefix('lawyer')->middleware('guest')->group(function () {
 Route::middleware('auth:lawyer')->group(function () {
     Route::get('/lawyer/{lawyer}/meetings', [LawyerController::class, 'show'])->name('lawyer.meetings');
     Route::post('/lawyer/logout', [AuthenticatedSessionController::class, 'destroy'])->name('lawyer.logout');
+    Route::post('meeting/update', [MeetingController::class, 'update'])->name('meeting.update');
 });

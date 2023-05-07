@@ -49,6 +49,12 @@ class HandleInertiaRequests extends Middleware
                     'location' => $request->url(),
                 ]);
             },
+
+            'flash' => function() {
+                return array_merge([
+                    'message' => session('status')
+                ]);
+            }
         ]);
     }
 }

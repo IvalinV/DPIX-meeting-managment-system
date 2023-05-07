@@ -7,8 +7,11 @@ use App\Models\Lawyer;
 use App\Models\Citizen;
 use App\Models\Meeting;
 use App\Http\Requests\StoreMeetingRequest;
+use App\Http\Resources\MeetingResource;
+use App\Jobs\ScheduleMeeting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class MeetingController extends Controller
@@ -47,25 +50,15 @@ class MeetingController extends Controller
      */
     public function store(StoreMeetingRequest $request)
     {
-        $lawyer = Lawyer::find($request->lawyer);
+        $lawyer = Lawyer::find($request->lawyer['id']);
         $citizen = Citizen::find($request->citizen);
 
         $requested_date = \Carbon\Carbon::parse($request->date);
         $already_requested = Meeting::whereDate('date', $requested_date)->exists();
 
-        if ($already_requested) {
-            $available_slot = $this->rescheduleMeeting($lawyer)->format('M d Y H:i');
-            return redirect()->back()->withErrors([
-                'date' => "Date time slot already requested! Can reschedule for: $available_slot"
-            ]);
-        }
+        ScheduleMeeting::dispatch($lawyer, $citizen, $requested_date, $already_requested);
 
-        $lawyer->meetings()->create([
-            'citizen_id' => $citizen->id,
-            'date' => $request->date
-        ]);
-
-        return redirect()->back()->with('status', 'Meeting requested succsesfully');
+        return redirect()->back()->with('status', 'Your meeting request is processing, we will get back to you shortly.');
     }
 
     /**
@@ -82,5 +75,70 @@ class MeetingController extends Controller
                 ->first()
                 ->date
                 ->addHour();
+    }
+
+    /**
+     * Search meetings by different params.
+     *
+     * @param Request $request
+     * @return Response $response
+     */
+    public function search(Request $request)
+    {
+        $results = Meeting::search($request->search)->query(function ($query) {
+            $query
+                ->join('citizens', 'meetings.citizen_id', 'citizens.id')
+                ->join('lawyers', 'meetings.lawyer_id', 'lawyers.id')
+                ->select([
+                    'meetings.id', 
+                    'meetings.date',
+                    'meetings.status',
+                    'lawyers.first_name as lawyer_first_name', 
+                    'lawyers.last_name as lawyer_last_name', 
+                    'citizens.first_name', 'citizens.last_name'
+                ])
+                ->orderBy('meetings.date', 'DESC');
+        })
+        ->paginate(10);
+        
+        return response()->json($results);
+    }
+
+    /**
+     * Sort meetings by the data provided from the user.
+     *
+     * @param Request $request
+     * @return MeetingResource $collection
+     */
+    public function sort(Request $request)
+    {
+        $sortingMethod = $request->direction === 'asc' ? "orderBy" : "orderByDesc";
+        $meetings = Meeting::where('lawyer_id', $request->lawyer_id)
+            ->$sortingMethod($request->param);
+
+        return MeetingResource::collection($meetings->paginate(10));
+    }
+
+    /**
+     * Filter meetings data by user input.
+     *
+     * @param Request $request
+     * @return MeetingResource $collection
+     */
+    public function filter(Request $request)
+    {
+        if($request->filter_by === 'status'){
+            $meetings = Meeting::where('lawyer_id', $request->lawyer_id)->orderBy('status');
+        }
+
+        if($request->filter_by === 'latest'){
+            $meetings = Meeting::where('lawyer_id', $request->lawyer_id)->latest();
+        }
+
+        if($request->filter_by === 'oldest'){
+            $meetings = Meeting::where('lawyer_id', $request->lawyer_id)->oldest();
+        }
+
+        return MeetingResource::collection($meetings->paginate(10));
     }
 }

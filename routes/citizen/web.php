@@ -28,3 +28,9 @@ Route::prefix('citizen')->middleware('guest')->group(function () {
     Route::post('reset-password', [AuthNewPasswordController::class, 'store'])
         ->name('citizen.password.store');
 });
+
+Route::middleware('auth:citizen')->group(function () {
+    Route::get('meeting/request', [MeetingController::class, 'create'])->name('meeting.create');
+    Route::post('meeting/store', [MeetingController::class, 'store'])->name('meeting.store');
+    Route::post('/citizen/logout', [AuthenticatedSessionController::class, 'destroy'])->name('citizen.logout');
+});

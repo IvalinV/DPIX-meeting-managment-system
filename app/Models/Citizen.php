@@ -41,4 +41,9 @@ class Citizen extends Authenticatable
             'last_name' => '',
         ];
     }
+
+    public function meetings()
+    {
+        return $this->hasMany(Meeting::class);
+    }
 }

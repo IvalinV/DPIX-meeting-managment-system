@@ -17,7 +17,9 @@
         "vue": "^3.2.41"
     },
     "dependencies": {
+        "flowbite": "^1.6.5",
         "laravel-vue-pagination": "^4.1.0",
+        "lodash.debounce": "^4.0.8",
         "vue-multiselect": "^3.0.0-beta.1"
     }
 }

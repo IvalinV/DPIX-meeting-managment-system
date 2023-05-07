@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Citizen;
+use App\Models\Meeting;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +14,8 @@ class CitizenSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Citizen::factory()
+            ->has(Meeting::factory()->count(10), 'meetings')
+            ->create();
     }
 }
