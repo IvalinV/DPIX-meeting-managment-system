@@ -9,6 +9,7 @@ import { Link, usePage } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
 const guard = usePage().props.auth.guard;
+const user = usePage().props.auth.user;
 </script>
 
 <template>
@@ -32,6 +33,14 @@ const guard = usePage().props.auth.guard;
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
+                                </NavLink>
+                                <NavLink v-if="guard === 'citizen'" :href="route('meeting.create')" :active="route().current('meeting.create')">
+                                    Request Meeting
+                                </NavLink>
+                                <NavLink 
+                                    :href="guard === 'lawyer' ? route('lawyer.meetings', user.id) : route('citizen.meetings', user.id)" 
+                                    :active="guard === 'lawyer' ? route().current('lawyer.meetings', user.id) : route().current('citizen.meetings', user.id)">
+                                    Your Meetings
                                 </NavLink>
                             </div>
                         </div>
