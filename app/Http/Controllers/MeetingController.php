@@ -50,10 +50,11 @@ class MeetingController extends Controller
      */
     public function store(StoreMeetingRequest $request)
     {
-        $lawyer = Lawyer::find($request->lawyer['id']);
-        $citizen = Citizen::find($request->citizen);
-
-        $requested_date = \Carbon\Carbon::parse($request->date);
+        $validated = $request->validated();
+        $lawyer = Lawyer::find($validated['lawyer']['id']);
+        $citizen = Citizen::find($validated['citizen']);
+        
+        $requested_date = \Carbon\Carbon::parse($validated['date']);
         $already_requested = Meeting::whereDate('date', $requested_date)->exists();
 
         ScheduleMeeting::dispatch($lawyer, $citizen, $requested_date, $already_requested);
@@ -85,7 +86,7 @@ class MeetingController extends Controller
      */
     public function search(Request $request)
     {
-        $results = Meeting::search($request->search)->query(function ($query) {
+        $results = Meeting::search(trim($request->search) ?? '')->query(function ($query) {
             $query
                 ->join('citizens', 'meetings.citizen_id', 'citizens.id')
                 ->join('lawyers', 'meetings.lawyer_id', 'lawyers.id')

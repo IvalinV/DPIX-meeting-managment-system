@@ -23,7 +23,8 @@ class StoreMeetingRequest extends FormRequest
     {
         return [
             'lawyer' => 'required',
-            'date' => 'required' //TODO: Create custom rule to check if the date is in the future
+            'citizen' => 'required',
+            'date' => 'required|date|after:today'
         ];
     }
 }
