@@ -54,10 +54,10 @@ class MeetingController extends Controller
         $lawyer = Lawyer::find($validated['lawyer']['id']);
         $citizen = Citizen::find($validated['citizen']);
         
-        $requested_date = \Carbon\Carbon::parse($validated['date']);
-        $already_requested = Meeting::whereDate('date', $requested_date)->exists();
+        $requestedDate = \Carbon\Carbon::parse($validated['date']);
+        $alreadyRequested = Meeting::whereDate('date', $requestedDate)->exists();
 
-        ScheduleMeeting::dispatch($lawyer, $citizen, $requested_date, $already_requested);
+        ScheduleMeeting::dispatch($lawyer, $citizen, $requestedDate, $alreadyRequested);
 
         return redirect()->back()->with('status', 'Your meeting request is processing, we will get back to you shortly.');
     }
@@ -99,8 +99,7 @@ class MeetingController extends Controller
                     'citizens.first_name', 'citizens.last_name'
                 ])
                 ->orderBy('meetings.date', 'DESC');
-        })
-        ->paginate(10);
+        })->paginate(10);
         
         return response()->json($results);
     }
