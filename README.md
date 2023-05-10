@@ -5,6 +5,12 @@ The project is running on Laravel Sail, which requires to have **docker installe
 **_NOTE:_** If you have any issues starting the container, it could be related to permissions issue and you need to add your user to the `docker` group.
 
 ## Instalation
+Before proceding with the commands into the container:
+
+`composer install`
+
+to install all the composer packages, including **Laravel Sail**.
+
 After the container is up-and-running run the following commands:
 
 - `./vendor/bin/sail composer install`

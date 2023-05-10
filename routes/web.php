@@ -1,16 +1,11 @@
 <?php
 
-use App\Http\Controllers\Citizen\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\CitizenController;
-use App\Http\Controllers\MeetingController;
-use App\Http\Controllers\ProfileController;
-use App\Models\Lawyer;
-use App\Models\Meeting;
-use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\CitizenController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -25,7 +20,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
 
-Route::get('test', function(Request $request){
+Route::get('test', function (Request $request) {
 
 });
 
