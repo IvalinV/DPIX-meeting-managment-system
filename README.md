@@ -15,6 +15,10 @@ Before starting the containers copy `.env.example` and renamed it to `.env` from
 
 To fire it up you need to run `./vendor/bin/sail up` or `./vendor/bin/sail up -d` to build the containers.
 
+If you have any issues with the database port, you can chage it in the `docker-composer.yml`
+`ports:
+    - '${FORWARD_DB_PORT:-3306}:3306'`
+
 After the container is up-and-running run the following commands:
 
 - `./vendor/bin/sail composer install`
